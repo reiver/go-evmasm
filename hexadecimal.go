@@ -80,7 +80,7 @@ func hexadecimal(text []byte) (byte, error) {
 		return 0, errNotNumeral
 	}
 
-	var num byte
+	var num uint16
 	{
 		var p []byte = text
 
@@ -91,30 +91,28 @@ func hexadecimal(text []byte) (byte, error) {
 			}
 			p = p[size:]
 
-			var n byte
+			var n uint16
 			switch r {
 			case '0','1','2','3','4','5','6','7','8','9':
-				n = byte(r - '0')
+				n = uint16(r - '0')
 
 			case 'a','b','c','d','e','f':
-				n = byte(r - 'a' + 10)
+				n = uint16(r - 'a' + 10)
 
 			case 'A','B','C','D','E','F':
-				n = byte(r - 'A' + 10)
+				n = uint16(r - 'A' + 10)
 
 			default:
 				return 0, errNotNumeral
 			}
 
-			old := num
-
 			num *= 16
-			if old > num {
+			if num > 255 {
 				return 0, errOverflow
 			}
 
 			num += n
-			if old > num {
+			if num > 255 {
 				return 0, errOverflow
 			}
 
@@ -123,6 +121,9 @@ func hexadecimal(text []byte) (byte, error) {
 			}
 		}
 	}
+	if num > 255 {
+		return 0, errOverflow
+	}
 
-	return num, nil
+	return byte(num), nil
 }
