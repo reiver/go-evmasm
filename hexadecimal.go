@@ -110,7 +110,6 @@ func hexadecimal(text []byte) (byte, error) {
 
 			num *= 16
 			if old > num {
-
 				return 0, errOverflow
 			}
 
