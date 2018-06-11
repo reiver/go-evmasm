@@ -4,7 +4,7 @@ import (
 	"unicode/utf8"
 )
 
-// hexadecimal parses the UTF-8 text in a []byte, trying to interpret it as hexadecimal digits, and tries to turn those hexadecimal digits into a number that fits into a byte.
+// hexadecimal parses the UTF-8 text in a []byte, trying to interpret it as hexadecimal digits (i.e., base 16 digits), and tries to turn those hexadecimal digits into a number that fits into a byte.
 //
 // If what it finds are not all hexadecimal digits, then it returns a errNotNumeral error.
 //
