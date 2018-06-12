@@ -6,7 +6,7 @@ import (
 
 // hexadecimal parses the UTF-8 text in a []byte, trying to interpret it as hexadecimal digits (i.e., base 16 digits), and tries to turn those hexadecimal digits into a number that fits into a byte.
 //
-// If what it finds are not all hexadecimal digits, then it returns a errNotNumeral error.
+// If what it finds are not all hexadecimal digits, then it returns a NotNumeral error.
 //
 // If what it finds are hexadecimal digits but represents a number larger than can fit in a byte (i.e., larger than 255), then it returns a errOverflow error.
 //
@@ -59,11 +59,11 @@ import (
 //
 // Error Examples:
 //
-//	hexadecimal( []byte("0x01") )  -> 0, errNotNumeral
+//	hexadecimal( []byte("0x01") )  -> 0, NotNumeral
 //
-//	hexadecimal( []byte("apple") ) -> 0, errNotNumeral
+//	hexadecimal( []byte("apple") ) -> 0, NotNumeral
 //
-//	hexadecimal( []byte("") )      -> 0, errNotNumeral
+//	hexadecimal( []byte("") )      -> 0, NotNumeral
 //
 //
 //	hexadecimal( []byte("100") )   -> 0, errOverflow
@@ -73,11 +73,11 @@ import (
 //	hexadecimal( []byte("1000") )  -> 0, errOverflow
 func hexadecimal(text []byte) (byte, error) {
 	if nil == text {
-		return 0, errNotNumeral
+		return 0, internalNotNumeral{string(text)}
 	}
 
 	if 0 >= len(text) {
-		return 0, errNotNumeral
+		return 0, internalNotNumeral{string(text)}
 	}
 
 	var num uint16
@@ -87,7 +87,7 @@ func hexadecimal(text []byte) (byte, error) {
 		for  {
 			r, size := utf8.DecodeRune(p)
 			if utf8.RuneError == r {
-				return 0, errNotNumeral
+				return 0, internalNotNumeral{string(text)}
 			}
 			p = p[size:]
 
@@ -103,7 +103,7 @@ func hexadecimal(text []byte) (byte, error) {
 				n = uint16(r - 'A' + 10)
 
 			default:
-				return 0, errNotNumeral
+				return 0, internalNotNumeral{string(text)}
 			}
 
 			num *= 16

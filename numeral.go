@@ -6,7 +6,7 @@ import (
 
 // numeral parses the UTF-8 text in a []byte, trying to interpret it as numeral, and tries to turn those numerals into a number that fits into a byte.
 //
-// If what it finds are not all numerals, then it returns a errNotNumeral error.
+// If what it finds are not all numerals, then it returns a NotNumeral error.
 //
 // If what it finds are numerals but represents a number larger than can fit in a byte (i.e., larger than 255), then it returns a errOverflow error.
 //
@@ -29,7 +29,7 @@ func numeral(text []byte) (byte, error) {
 
 		r0, size = utf8.DecodeRune(p)
 		if utf8.RuneError == r0 {
-			return 0, errNotNumeral
+			return 0, internalNotNumeral{string(text)}
 		}
 		p = p[size:]
 
@@ -40,7 +40,7 @@ func numeral(text []byte) (byte, error) {
 				return x, nil
 
 			default:
-				return 0, errNotNumeral
+				return 0, internalNotNumeral{string(text)}
 			}
 		}
 	}
@@ -51,16 +51,16 @@ func numeral(text []byte) (byte, error) {
 
 		r1, size = utf8.DecodeRune(p)
 		if utf8.RuneError == r1 {
-			return 0, errNotNumeral
+			return 0, internalNotNumeral{string(text)}
 		}
 		p = p[size:]
 
 		if '0' == r0 && 'x' != r1 {
-			return 0, errNotNumeral
+			return 0, internalNotNumeral{string(text)}
 		}
 
 		if '0' == r0 && 'x' == r1 && 0 >= len(p) {
-			return 0, errNotNumeral
+			return 0, internalNotNumeral{string(text)}
 		}
 
 		if 0 >= len(p) {
@@ -70,7 +70,7 @@ func numeral(text []byte) (byte, error) {
 
 				return x, nil
 			default:
-				return 0, errNotNumeral
+				return 0, internalNotNumeral{string(text)}
 			}
 		}
 	}
@@ -82,6 +82,6 @@ func numeral(text []byte) (byte, error) {
 	case '0' <= r0 && r0 <= '9' && '0' <= r1 && r1 <= '9':
 		return decimal(text)
 	default:
-		return 0, errNotNumeral
+		return 0, internalNotNumeral{string(text)}
 	}
 }

@@ -6,7 +6,7 @@ import (
 
 // decimal parses the UTF-8 text in a []byte, trying to interpret it as decimal digits (i.e., base 10 digits), and tries to turn those decimal digits into a number that fits into a byte.
 //
-// If what it finds are not all decimal digits, then it returns a errNotNumeral error.
+// If what it finds are not all decimal digits, then it returns a NotNumeral error.
 //
 // If what it finds are decimal digits but represents a number larger than can fit in a byte (i.e., larger than 255), then it returns a errOverflow error.
 //
@@ -38,13 +38,13 @@ import (
 //
 // Error Examples:
 //
-//	decimal( []byte("ff") )   -> 0, errNotNumeral
+//	decimal( []byte("ff") )   -> 0, NotNumeral
 //
-//	decimal( []byte("0x01") )  -> 0, errNotNumeral
+//	decimal( []byte("0x01") )  -> 0, NotNumeral
 //
-//	decimal( []byte("apple") ) -> 0, errNotNumeral
+//	decimal( []byte("apple") ) -> 0, NotNumeral
 //
-//	decimal( []byte("") )      -> 0, errNotNumeral
+//	decimal( []byte("") )      -> 0, NotNumeral
 //
 //
 //	decimal( []byte("256") )   -> 0, errOverflow
@@ -52,11 +52,11 @@ import (
 //	decimal( []byte("1000") )  -> 0, errOverflow
 func decimal(text []byte) (byte, error) {
 	if nil == text {
-		return 0, errNotNumeral
+		return 0, internalNotNumeral{string(text)}
 	}
 
 	if 0 >= len(text) {
-		return 0, errNotNumeral
+		return 0, internalNotNumeral{string(text)}
 	}
 
 	var num uint16
@@ -66,7 +66,7 @@ func decimal(text []byte) (byte, error) {
 		for  {
 			r, size := utf8.DecodeRune(p)
 			if utf8.RuneError == r {
-				return 0, errNotNumeral
+				return 0, internalNotNumeral{string(text)}
 			}
 			p = p[size:]
 
@@ -76,7 +76,7 @@ func decimal(text []byte) (byte, error) {
 				n = uint16(r - '0')
 
 			default:
-				return 0, errNotNumeral
+				return 0, internalNotNumeral{string(text)}
 			}
 
 			num *= 10
