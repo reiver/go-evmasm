@@ -258,6 +258,79 @@ func TestTokenize(t *testing.T) {
 				"FIVE",
 			},
 		},
+
+
+
+		{
+			Code: "push1  0x01",
+			Expected: []string{
+				"push1",
+				"0x01",
+			},
+		},
+		{
+			Code: "push2  0x01  0x02",
+			Expected: []string{
+				"push2",
+				"0x01",
+				"0x02",
+			},
+		},
+		{
+			Code: "push3  0x01  0x02  0x03",
+			Expected: []string{
+				"push3",
+				"0x01",
+				"0x02",
+				"0x03",
+			},
+		},
+		{
+			Code: "push4  0x01  0x02  0x03  0x04",
+			Expected: []string{
+				"push4",
+				"0x01",
+				"0x02",
+				"0x03",
+				"0x04",
+			},
+		},
+		{
+			Code: "push5  0x01  0x02  0x03  0x04  0x05",
+			Expected: []string{
+				"push5",
+				"0x01",
+				"0x02",
+				"0x03",
+				"0x04",
+				"0x05",
+			},
+		},
+		{
+			Code: "push6  0x01  0x02  0x03  0x04  0x05  0x06",
+			Expected: []string{
+				"push6",
+				"0x01",
+				"0x02",
+				"0x03",
+				"0x04",
+				"0x05",
+				"0x06",
+			},
+		},
+		{
+			Code: "push7  0x01  0x02  0x03  0x04  0x05  0x06  0x07",
+			Expected: []string{
+				"push7",
+				"0x01",
+				"0x02",
+				"0x03",
+				"0x04",
+				"0x05",
+				"0x06",
+				"0x07",
+			},
+		},
 	}
 
 
